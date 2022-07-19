@@ -1,0 +1,75 @@
+echo "
+ ▄▄▄       ███▄    █  ██▓   ▓██   ██▓▒███████▒   ▄▄▄█████▓ ██▓  ██████      
+▒████▄     ██ ▀█   █ ▓██▒    ▒██  ██▒▒ ▒ ▒ ▄▀░   ▓  ██▒ ▓▒▓██▒▒██    ▒      
+▒██  ▀█▄  ▓██  ▀█ ██▒▒██░     ▒██ ██░░ ▒ ▄▀▒░    ▒ ▓██░ ▒░▒██▒░ ▓██▄        
+░██▄▄▄▄██ ▓██▒  ▐▌██▒▒██░     ░ ▐██▓░  ▄▀▒   ░   ░ ▓██▓ ░ ░██░  ▒   ██▒     
+ ▓█   ▓██▒▒██░   ▓██░░██████▒ ░ ██▒▓░▒███████▒     ▒██▒ ░ ░██░▒██████▒▒ ██▓ 
+ ▒▒   ▓▒█░░ ▒░   ▒ ▒ ░ ▒░▓  ░  ██▒▒▒ ░▒▒ ▓░▒░▒     ▒ ░░   ░▓  ▒ ▒▓▒ ▒ ░ ▒▓▒ 
+  ▒   ▒▒ ░░ ░░   ░ ▒░░ ░ ▒  ░▓██ ░▒░ ░░▒ ▒ ░ ▒       ░     ▒ ░░ ░▒  ░ ░ ░▒  
+  ░   ▒      ░   ░ ░   ░ ░   ▒ ▒ ░░  ░ ░ ░ ░ ░     ░       ▒ ░░  ░  ░   ░   
+      ░  ░         ░     ░  ░░ ░       ░ ░                 ░        ░    ░  
+                             ░ ░     ░                                   ░  
+
+
+"
+# PornHub PowerShell Automation Script v1.0
+# This script will randomly click on videos on PornHub
+# Use Windows 10 SandBox Environment, Built with Res: 1920 x 1080
+# //Zappit
+
+# Setting up an environment by importing a couple of system assemblies
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
+                sleep -Seconds 0.1
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+                sleep -Seconds 0.1      
+
+# Create an array by calling in user32.dll & calling the mouse clicking event within.                   
+$signature=@'
+[DllImport("user32.dll",CharSet=CharSet.Auto,CallingConvention=CallingConvention.StdCall)]
+public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+'@
+                
+        sleep -Seconds 0.2
+        
+                # You will now have to add a type of the above called mouse event array list.   
+                $SendMouseClick = Add-Type -memberDefinition $signature -name "Win32MouseEventNew" -namespace Win32Functions -passThru
+                
+        sleep -Seconds 0.2
+                                                
+                # Now lets create the while loop and the 2 random timers.
+                while ($true)
+
+                        {
+                                # Timer Variables - In seconds
+                                # $rnd = Random timer to open MS-edge with the Target URL.
+                                # $rnd2 = Random timer to close the TAB the Target URL is running.
+                                
+                                $rnd = Get-Random -Minimum 2 -Maximum 15
+                                $rnd2 = Get-Random -Minimum 22 -Maximum 600
+                        
+                                # Start Timer 1
+                                Start-Sleep -Seconds $rnd
+
+                                        # Opens Up MS-Edge with the target URL "<URL>"
+                                        [system.Diagnostics.Process]::Start("msedge","https://pornhub.com")
+                                
+                                                sleep 6
+                                                
+                                                # Set Coordinates for MouseEvent
+                                                $x = 423
+                                                $y = 362
+                                                        [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($x, $y)
+                                        
+                                                        sleep -Seconds 0.1
+                                        
+                                                        # Send MouseEvents - Left button down, Left button up
+                                                        $SendMouseClick::mouse_event(0x00000002, 0, 0, 0, 0);
+                                                        $SendMouseClick::mouse_event(0x00000004, 0, 0, 0, 0);
+                                
+                                                                # Start Timer 2 
+                                                                Start-Sleep -Seconds $rnd2
+                                                        
+                                                                # Send CTRL-w to close the MS-Edge TAB.
+                                                                [System.Windows.Forms.SendKeys]::SendWait("^{w}")
+                                
+                        }
